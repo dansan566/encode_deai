@@ -1,9 +1,11 @@
 from openai import OpenAI
 import os
 
-def chat_with_ai(api_key, model="google/gemini-2.0-flash-exp:free"):
+base_url = os.environ.get("BASE_URL")
+model = os.environ.get("MODEL")
+def chat_with_ai(api_key):
     client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
+        base_url=base_url,
         api_key=api_key,
     )
     # Personality
