@@ -165,18 +165,55 @@ export default function JokeGenerator() {
       </form>
 
       <div className="space-y-4">
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`p-4 rounded-lg ${
-              m.role === 'assistant'
-                ? 'bg-white text-gray-800 shadow-sm'
-                : 'hidden'
-            }`}
-          >
-            <div className="whitespace-pre-wrap">{m.content}</div>
-          </div>
-        ))}
+        {messages.map((m) => {
+          if (m.role === 'assistant') {
+            const parts = m.content.split('[EVALUATION]');
+            const joke = parts[0].replace('[JOKE]', '').trim();
+            const evaluation = parts[1]?.trim();
+
+            return (
+              <div key={m.id} className="space-y-4">
+                <div className="p-6 rounded-lg bg-white text-gray-800 shadow-sm">
+                  <div className="whitespace-pre-wrap text-lg">{joke}</div>
+                </div>
+                {evaluation && (
+                  <div className="p-4 rounded-lg bg-gray-50 text-gray-600 border border-gray-200">
+                    <h3 className="font-medium mb-2 text-gray-800">Joke Evaluation</h3>
+                    <div className="space-y-1">
+                      {evaluation.split('\n').map((line, index) => {
+                        if (!line.trim()) return null;
+                        const [metric, value] = line.split(':').map(s => s.trim());
+                        if (!value) return null;
+                        
+                        let ratingColor = 'text-gray-600';
+                        if (metric.includes('Rating')) {
+                          const rating = parseInt(value);
+                          if (metric.includes('Offensive')) {
+                            ratingColor = rating > 7 ? 'text-red-600' : 
+                                        rating > 4 ? 'text-yellow-600' : 
+                                        'text-green-600';
+                          } else {
+                            ratingColor = rating > 7 ? 'text-green-600' : 
+                                        rating > 4 ? 'text-yellow-600' : 
+                                        'text-red-600';
+                          }
+                        }
+                        
+                        return (
+                          <div key={index} className="flex justify-between items-center">
+                            <span className="font-medium">{metric}</span>
+                            <span className={ratingColor}>{value}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          }
+          return null;
+        })}
         {isLoading && messages.length === 0 && (
           <div className="flex justify-center p-4">
             <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
