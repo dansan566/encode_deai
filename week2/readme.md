@@ -5,3 +5,4 @@
 3. I found that in step 4 of exercise 3, lesson 6, the `npm install` failed. Mistral AI identifies as a dependency mismatch between `"react-dom": "19.0.0-rc-45804af1-20241021"`, and `"drizzle-orm": "^0.34.0"`. It suggests using the command `npm install --legacy-peer-deps` to force the install. 
 4. I deployed the nextjs-chat app on Vercel but the homepage requests a login and I don't know what login it is. I tried the AUTH_SECRET ket but this doesn't work. And I don't feel like giving my credential on a web page powered by a set of libraries that I don't know.
 5. I installed Cursor and used it in the exercise of Lesson 5 and 6. I also tried it on a previous ETHGlobal hackathon project. I adopted it :)
+6. I started the step 4 and 5 of the weekend homework.
