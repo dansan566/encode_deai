@@ -1,5 +1,7 @@
 Work-in-progress. For the time being, it's a copy of the readme week 2
 
+I added a project my-joke-app. It implements the week2 homework until step 7. The joke is generated based on the parameters given in the homepage
+
 ## Weekend Project
 
 To consolidate the knowledge acquired this week, students should complete the following project:
