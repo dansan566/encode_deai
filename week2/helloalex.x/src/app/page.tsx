@@ -39,6 +39,12 @@ export default function Home() {
               width={20}
               height={20}
             />
+            <a
+  className="mt-4 p-2 bg-blue-500 text-white rounded"
+  href="/jokes"
+>
+  Go to Joke Generator
+</a>
             Deploy now
           </a>
           <a
