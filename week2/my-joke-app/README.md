@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is week 2 homework from KsHRM4 - @kvutien .
+It is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
@@ -13,8 +14,11 @@ pnpm dev
 # or
 bun dev
 ```
+Create a `.env` file from the example `.env.example` and put you Open AI API key.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. Change the options, click the button "Get Joke".
+<img src="./home_image_2025-03-17.png" alt="Description of the image" width="70%" height="70%">
+
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
