@@ -1,4 +1,4 @@
-This is the project of kvutien (KshMR4) homework of week 3 of the Encode Club AI Agent bootcamp, Q1 2025. It is wiP. The UI is done but not yet the AI call.
+This is the project of kvutien (KshMR4) homework of week 3 of the Encode Club AI Agent bootcamp, Q1 2025. It is wiP. The UI is done. The call to AI-SDK of Vercel is done but not tested yet.
 <img src="../images/20250322-WiP.png" width="80%" height="80%">
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
