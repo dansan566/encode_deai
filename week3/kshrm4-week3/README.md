@@ -5,7 +5,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, install the Vercel AI-SDK
+```bash
+npm install ai @ai-sdk/react @ai-sdk/openai zod
+```
+Then run the development server:
 
 ```bash
 npm run dev
