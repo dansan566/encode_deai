@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useChat } from "ai/react";
 
 type Character = {
@@ -35,6 +35,9 @@ export default function Chat() {
     description: "",
     personality: "",
   });
+
+  // Flag to trigger the automatic recap request
+  const [shouldRequestRecap, setShouldRequestRecap] = useState(false);
 
   const handleChange = ({
     target: { name, value },
@@ -84,7 +87,29 @@ export default function Chat() {
       role: "user",
       content: `Generate a ${state.genre} story in a ${state.tone} tone including these characters:\n${charactersDescription}\n`,
     });
+
+    // Set flag to automatically request recap when the story is complete
+    setShouldRequestRecap(true);
   };
+
+  // Determine if the story has finished generating:
+  // Not loading and the last message is from the assistant.
+  const storyFinished =
+    !isLoading &&
+    messages.length > 0 &&
+    messages[messages.length - 1].role === "assistant";
+
+  // Automatically send recap request after story generation is finished.
+  useEffect(() => {
+    if (storyFinished && shouldRequestRecap) {
+      append({
+        role: "user",
+        content:
+          "Please provide only a short recap of each character's role in the story, with no introduction, conclusion, or follow-up questions. also no: 'Here is the recap ...:,' and no  story recap",
+      });
+      setShouldRequestRecap(false);
+    }
+  }, [storyFinished, shouldRequestRecap, append]);
 
   return (
     <main className="mx-auto w-full p-24 flex flex-col">
@@ -200,25 +225,15 @@ export default function Chat() {
           Generate Story
         </button>
 
-        {/* Display AI Response */}
+        {/* Display Assistant Responses Only */}
         <div className="bg-opacity-25 bg-gray-700 rounded-lg p-4 whitespace-pre-wrap">
-          {/* Display the latest message (streaming in) */}
-          {messages[messages.length - 1]?.content}
-
-          {/* Only show the Character Recap once the assistant's response has stopped streaming */}
-          {!isLoading &&
-            messages.length > 0 &&
-            messages[messages.length - 1].role === "assistant" &&
-            characters.length > 0 && (
-              <div className="mt-4">
-                <h4 className="font-semibold">Character Recap:</h4>
-                {characters.map((c) => (
-                  <p key={c.id}>
-                    {c.name}: {c.personality} - {c.description}
-                  </p>
-                ))}
-              </div>
-            )}
+          {messages
+            .filter((msg) => msg.role === "assistant")
+            .map((msg, index) => (
+              <p key={index} className="mb-4">
+                {msg.content}
+              </p>
+            ))}
         </div>
       </div>
     </main>
