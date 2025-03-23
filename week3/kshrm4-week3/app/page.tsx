@@ -16,6 +16,7 @@ export default async function Home() {
 
   return (
     <div className="p-8">
+      {/* rendering characters handling and display */}
       <h1 className="text-2xl font-bold mb-4">KshRM4 AI Story Generator</h1>
       {/* Pass initialCharacters as a prop to the client component */}
       <CharacterManager initialCharacters={initialCharacters} />
