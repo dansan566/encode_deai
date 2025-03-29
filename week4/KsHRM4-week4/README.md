@@ -25,7 +25,7 @@ Encode Club told me that I can ignore the message. The app stioll works. This is
 <img src="./images/rag-chat-shek.png" width="60%" height="60%">
 
 
-## Getting Started
+## Homework
 
 In the exercise 1 of lesson 16, we have already done most of the home work.
 1.	Design a page with a single input field for .txt file uploads.
