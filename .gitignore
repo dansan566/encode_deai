@@ -171,5 +171,9 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-#MacOS
+# MacOS
 .DS_Store
+
+# ignore the content of node_modules
+node_modules/*
+!node_modules/
