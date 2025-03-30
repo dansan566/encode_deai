@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import { StoryGenerator } from "./story-generator";
 
 interface Character {
   name: string;
@@ -73,8 +74,8 @@ export function FileUploadSection() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
-      <div className="mb-8">
+    <div className="w-full max-w-4xl mx-auto p-4 space-y-8">
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Upload Text File
         </label>
@@ -93,7 +94,7 @@ export function FileUploadSection() {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-md">
+        <div className="p-4 bg-red-50 text-red-700 rounded-md">
           {error}
         </div>
       )}
@@ -105,35 +106,43 @@ export function FileUploadSection() {
       )}
 
       {characters.length > 0 && (
-        <div className="space-y-4">
-          {metadata && (
-            <div className="text-sm text-gray-500">
-              <p>Total Characters: {metadata.totalCharacters}</p>
-              <p>Source File: {metadata.sourceFile}</p>
-              <p>Extracted: {new Date(metadata.timestamp).toLocaleString()}</p>
-            </div>
-          )}
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Extracted Characters</h2>
+            {metadata && (
+              <div className="text-sm text-gray-500 mb-4">
+                <p>Total Characters: {metadata.totalCharacters}</p>
+                <p>Source File: {metadata.sourceFile}</p>
+                <p>Extracted: {new Date(metadata.timestamp).toLocaleString()}</p>
+              </div>
+            )}
 
-          <ScrollArea className="h-[600px] rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Character</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Personality</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {characters.map((character, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{character.name}</TableCell>
-                    <TableCell>{character.description}</TableCell>
-                    <TableCell>{character.personality}</TableCell>
+            <ScrollArea className="h-[400px] rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Character</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Personality</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+                </TableHeader>
+                <TableBody>
+                  {characters.map((character, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{character.name}</TableCell>
+                      <TableCell>{character.description}</TableCell>
+                      <TableCell>{character.personality}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Generate New Story</h2>
+            <StoryGenerator characters={characters} />
+          </div>
         </div>
       )}
     </div>
