@@ -1,5 +1,5 @@
 import Header from "@/app/components/header";
-import ChatSection from "./components/chat-section";
+import FileUploadSection from "./components/file-upload-section";
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
       <div className="space-y-2 lg:space-y-10 w-[90%] lg:w-[60rem]">
         <Header />
         <div className="h-[65vh] flex">
-          <ChatSection />
+          <FileUploadSection />
         </div>
       </div>
     </main>
