@@ -1,5 +1,5 @@
 import Header from "@/app/components/header";
-import FileUploadSection from "./components/file-upload-section";
+import { FileUploadSection } from "./components/file-upload-section";
 
 export default function Home() {
   return (

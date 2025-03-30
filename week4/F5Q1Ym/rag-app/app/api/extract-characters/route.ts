@@ -16,6 +16,15 @@ interface Character {
   personality: string;
 }
 
+interface CharacterExtractionResponse {
+  metadata: {
+    totalCharacters: number;
+    timestamp: string;
+    sourceFile: string;
+  };
+  characters: Character[];
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -146,7 +155,14 @@ export async function POST(request: NextRequest) {
       }
 
       console.log("Successfully extracted characters:", validCharacters.length);
-      return NextResponse.json({ characters: validCharacters });
+      return NextResponse.json({
+        metadata: {
+          totalCharacters: validCharacters.length,
+          timestamp: new Date().toISOString(),
+          sourceFile: file.name
+        },
+        characters: validCharacters
+      } as CharacterExtractionResponse);
     } catch (error) {
       console.error("Error processing character extraction:", error);
       console.error("Original response:", response.response);
