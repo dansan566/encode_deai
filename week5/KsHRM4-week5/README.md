@@ -20,4 +20,5 @@ The Exercise 1: Invoking an Onchain AI Oracle from a smart contract to execute a
 - Plan the interaction points with AI agents.
 - Consider gas optimization and security measures: The above section in lesson 19 touches upon handling callback gas limits for different model IDs and provides a reference list for models and addresses on various networks, which are practical considerations for on-chain or decentralised inference
 
-WiP
+## Diversion Deep Dive into ORA Protocol
+I spent the weekend to deep dive into ORA protocol and design some JavaScript and Solidity code but I did not have time to implement anything. The Deep Dive is in PDF, file `ORA Protocol deep dive.pdf`
