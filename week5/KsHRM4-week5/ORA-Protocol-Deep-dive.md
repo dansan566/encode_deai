@@ -658,7 +658,6 @@ console.log("Resolved?", result.resolved);
 1.  **Result Submission**:
 
 -  An RMS node submits a result with a cryptographic proof (e.g., a signature from a quorum of RMS nodes).
-
 -  The result is stored on-chain, and a challenge period (e.g., 1 hour) begins.
 
 2.  **Dispute Window**:
