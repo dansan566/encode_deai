@@ -675,7 +675,6 @@ console.log("Resolved?", result.resolved);
 #### Key Takeaways:
 
 -  OpML handles on-chain coordination (requests, disputes, finalization).
-
 -  RMS ensures off-chain computation is correct via replication and consensus.
 -  Optimistic Rollup reduces costs by only settling disputes on-chain.
 
