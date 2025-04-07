@@ -192,7 +192,7 @@ contract AI_NFT is ERC721 {
 ```
 Verifiable "AI Creativity" with the 7007 Protocol (https://www.7007.ai/)
 
-±±± Running AI Text Generation Tasks with Decentralized AI Model Inferences
+### Running AI Text Generation Tasks with Decentralized AI Model Inferences
 -  The OAO Github repository: https://github.com/ora-io/OAO
 - Implementing the `IAIOracle.sol` interface
 -  Building smart contracts with ORA's AI Oracle: https://docs.ora.io/doc/ai-oracle/ai-oracle/build-with-ai-oracle
