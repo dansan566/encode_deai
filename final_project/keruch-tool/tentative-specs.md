@@ -17,8 +17,57 @@ I imagine the UX of 4 pieces:
 Let's start with Electron, because VS Code is based on Electron and what we'll do is much like VS Code.
 
 Disclaimer: the code below is made by reading the docs and has not been tested yet as of Monday 14 April 2025.
+
+### Need to know about Electron vs. React
+When introducing the Main and Renderer processes in Electron to a React developer, you can draw parallels to concepts they're already familiar with, while also highlighting the key differences. Here's a way to explain it:
+
+#### Analogy to Front-end vs. Back-end (Simplified):
+
+Think of Electron's architecture as having a distinct 'back-end' and 'front-end', though both run locally on the user's machine.
+
+* **The Main Process is like the 'back-end'**: It's the central brain of your application. It's responsible for things that happen behind the scenes, like managing the application window itself, interacting with the operating system (like file system access, menus, notifications), and coordinating the different parts of your application. It runs in a Node.js environment.
+
+* **The Renderer Process is like the 'front-end'**: This is where your actual user interface lives. Each window in your Electron application gets its own Renderer Process. This process is essentially a Chromium browser instance, and it's where your React code (or any web technology like HTML, CSS, JavaScript) gets rendered and interacts with the user."
+
+#### Differences between the folders `src` and `dist`
+In an Electron-based TypeScript project, the src and dist folders serve distinct and crucial roles in the development and build process. Here's a breakdown of their differences:
+1. You write and edit your code in the src folder using TypeScript.
+2. You run a build process (often using tools like tsc - the TypeScript compiler - and potentially other build tools like Webpack or Parcel).
+3. The build process takes the TypeScript files from src, compiles them into JavaScript, and places the output along with other necessary assets into the dist folder.
+4. Electron is then configured to run the JavaScript files located in the dist folder.
+5. When you package your application for distribution, you typically package the contents of the dist folder.
+
+
+#### Key Differences and Analogies to React Concepts:
+
+1.  **Environment:**
+    * **Main Process:** "The Main Process runs in a full Node.js environment. This means you have access to all Node.js APIs and modules directly. Think of it like your server-side code in a full-stack React application (though it's still running locally)."
+    * **Renderer Process:** "The Renderer Process runs in a browser-like environment (Chromium). This is where your familiar web APIs (DOM, `window`, `document`, `fetch`, etc.) are available. This is very similar to the environment where your React components run in a web browser."
+
+2.  **Responsibility:**
+    * **Main Process:** "The Main Process is responsible for the 'global' aspects of your application and interacting with the underlying operating system. It doesn't directly render the UI content. Think of it as handling the setup and coordination for your React front-ends."
+    * **Renderer Process:** "The Renderer Process is solely focused on rendering the UI and handling user interactions within its specific window. This is where your React components, state management (like Redux or Context), and UI logic reside."
+
+3.  **Communication:**
+    * "Unlike components in React that communicate through props and callbacks within the same process, the Main and Renderer processes are separate and need a special way to talk to each other. This is called **Inter-Process Communication (IPC)**. Think of it like making API calls between your React front-end and your back-end. Electron provides mechanisms like `ipcRenderer` (in the Renderer) and `ipcMain` (in the Main) to send and receive messages."
+
+4.  **Number of Instances:**
+    * **Main Process:** "There's typically only one Main Process for your entire Electron application."
+    * **Renderer Process:** "You can have multiple Renderer Processes, one for each window you open in your application. Each window will have its own isolated environment for rendering your React UI."
+
+5.  **Analogy to `ts` and `tsx` files:**
+    * "The distinction between the Main and Renderer processes isn't directly analogous to the difference between `.ts` and `.tsx` files. `.ts` files are TypeScript files that can contain any TypeScript code, while `.tsx` files specifically allow for JSX syntax within your TypeScript, which is primarily used for defining React components.
+    * Think of it this way: both the Main and Renderer processes can be written in TypeScript (`.ts`). If you're building your UI with React in the Renderer process, you'll be using `.tsx` files there. The Main process, which doesn't deal with UI rendering in the same way, will typically use `.ts` files."
+
+#### Key Takeaway for a React Developer:
+
+"As a React developer, you'll likely spend most of your time writing code that runs in the **Renderer Process** using your familiar React patterns and libraries. The **Main Process** will handle the more 'system-level' tasks and act as a bridge between your UI and the underlying operating system. You'll need to learn about IPC to enable communication between your React UI in the Renderer and the Main process for tasks that require OS-level permissions or backend-like functionality."
+
+By framing the explanation with analogies to front-end/back-end concepts and highlighting the differences in environment and responsibility, a React developer can more easily grasp the fundamental separation of concerns in Electron's architecture. Emphasize that while the rendering part will feel familiar, the concept of a separate Main Process and the need for IPC are new concepts to learn.
+
+
 ### Use Type Script
-We'll use TypeScript and `ts-node`. 
+Coming from RTeact and NextJS, we are used to TypeScript. We'll use TypeScript (and possibly `ts-node`). 
 
 We check that Node TypeScript and the libraries are installed
 ``` bash
@@ -87,7 +136,9 @@ The Start Script is
 - `build`: Compiles your TypeScript code.
 - `start`: Runs the build script and then starts the Electron application. The `.` refers to the current directory, which should contain the compiled `main.js`
 
-### Basic Electron application code `dist/main`
+
+## Application Code
+### Basic Electron application code `src/main`
 
 ``` TypeScript
 import { app, BrowserWindow } from 'electron';
@@ -146,11 +197,11 @@ app.on('activate', () => {
 
 ### Create our Renderer Process TypeScript (renderer.ts):
 
-Create a `dist/renderer.ts` file:
+Create a `src/renderer.ts` file:
 ``` Bash
-touch dist/renderer.ts
+touch src/renderer.ts
 ``` 
-Add some basic content to `dist/renderer.ts`:
+Add some basic content to `src/renderer.ts`:
 ``` TypeScript
 document.addEventListener('DOMContentLoaded', () => {
   const appDiv = document.getElementById('app');
