@@ -1,14 +1,17 @@
 {
   "name": "ai-solidity-ide",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "main": "dist/main.js",
+  "description": "An interactive AI-powered Solidity coding tool built with Electron and TypeScript",
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && electron ./dist/main.js",
+    "dev": "ts-node src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Group 8 of DeAI bootcamp",
+  "license": "MIT",
   "devDependencies": {
     "@types/electron": "^1.4.38",
     "@types/node": "^22.14.1",

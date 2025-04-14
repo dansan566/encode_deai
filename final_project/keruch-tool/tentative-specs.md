@@ -175,9 +175,11 @@ The Start Script in the modified `package.json` file is
   "author": "Group 8 of DeAI bootcamp",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^...",
-    "electron": "^...",
-    "typescript": "^..."
+    "@types/electron": "^1.4.38",
+    "@types/node": "^22.14.1",
+    "electron": "^35.1.5",
+    "ts-node": "^10.9.2"
+    "typescript": "^5.6.3"
   }
 }
 ``` 
