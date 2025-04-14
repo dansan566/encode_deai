@@ -34,7 +34,9 @@ Think of Electron's architecture as having a distinct 'back-end' and 'front-end'
 * **The Renderer Process is like the 'front-end'**: This is where your actual user interface lives. Each window in your Electron application gets its own Renderer Process. This process is essentially a Chromium browser instance, and it's where your React code (or any web technology like HTML, CSS, JavaScript) gets rendered and interacts with the user."
 
 ### Differences between the folders `src` and `dist`
-In an Electron-based TypeScript project, the `src` and `dist` folders serve distinct and crucial roles in the development and build process. Here's a breakdown of their differences:
+In an Electron-based TypeScript project, the `src` and `dist` folders serve distinct and crucial roles in the development and build process. They are defined in the `ts-config.json` file.
+
+Here's a breakdown of their differences:
 1. You write and edit your code in the `src` folder using TypeScript.
 2. You run a build process (often using tools like `tsc` - the TypeScript compiler - and potentially other build tools like Webpack or Parcel).
 3. The build process takes the TypeScript files from `src`, compiles them into JavaScript, and places the output along with other necessary assets into the `dist` folder.
@@ -52,6 +54,21 @@ In an Electron-based TypeScript project, the `src` and `dist` folders serve dist
 | **Build Process** | Input to the build process             | Output of the build process                |
 
 Understanding this distinction is fundamental for managing your Electron-based TypeScript project effectively. It helps you organize your code, manage the build process, and prepare your application for deployment.
+
+### Typical project structure for Electron with TypeScript
+
+    ```
+    my-electron-app/
+    ├── src/
+    │   ├── main.ts        // Main process entry point
+    │   └── renderer/      // Renderer process files
+    │       ├── index.ts   // Renderer entry point
+    │       └── ...
+    ├── dist/            // Compiled JavaScript output
+    ├── node_modules/
+    ├── package.json
+    └── tsconfig.json
+    ```
 
 ### Key Differences and Analogies to React Concepts:
 
@@ -80,6 +97,14 @@ Understanding this distinction is fundamental for managing your Electron-based T
 
 By framing the explanation with analogies to front-end/back-end concepts and highlighting the differences in environment and responsibility, a React developer can more easily grasp the fundamental separation of concerns in Electron's architecture. Emphasize that while the rendering part will feel familiar, the concept of a separate Main Process and the need for IPC are new concepts to learn.
 
+### Integrating AI TypeScript Libraries:**
+
+- Install your AI TypeScript libraries using `npm install <library-name>`.
+- Ensure you have the corresponding type definitions installed (often they come bundled with the library or are available as `@types/<library-name>`).
+- Import and use the libraries in your TypeScript code as you would in a React project. 
+The type safety provided by TypeScript will be particularly beneficial when working with the potentially complex data structures and interfaces of AI libraries.
+
+
 ## First steps: basic app
 ### Use Type Script
 Using AI libraries, it is strongly recommended to use TypeScript. We'll use TypeScript (and `ts-node`). 
@@ -100,7 +125,7 @@ If we don't have TypeScript already installed, we install it with its developmen
 ``` bash
 npm install --save-dev typescript ts-node @types/node @types/electron
 ```
-- Install `ts-node` (if you plan to run TypeScript directly during development)
+- Install `ts-node` (recommended for Electron-based development, to avoid having to run `tsc` before each test run)
 - Install the necessary type definitions `@types/node @types/electron`
 
 
@@ -137,8 +162,9 @@ The Start Script is
   "description": "An interactive AI-powered Solidity coding tool built with Electron and TypeScript",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && electron ."
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && electron ./dist/main.js",
+    "dev": "ts-node src/main.ts"    // For development, might not be ideal for production-like testing
   },
   "author": "Group 8 of DeAI bootcamp",
   "license": "MIT",
@@ -149,8 +175,9 @@ The Start Script is
   }
 }
 ``` 
-- `build`: Compiles your TypeScript code.
-- `start`: Runs the build script and then starts the Electron application. The `.` refers to the current directory, which should contain the compiled `main.js`
+- `build`: Runs the TypeScript compiler (`tsc`) using the configurations in `tsconfig.json`.
+- `start`: First builds the TypeScript code and then runs the Electron application using the compiled `main.js` file in the `dist` directory.
+- `dev`: Directly runs the `main.ts` file using `ts-node`. This can be convenient during development for quick iterations, but it doesn't produce a production-ready build. For a better development experience with hot-reloading for the renderer process, consider using tools like Webpack or Parcel with appropriate configurations.
 
 
 ## Application Code
