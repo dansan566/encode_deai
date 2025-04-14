@@ -282,4 +282,5 @@ This should compile the TypeScript and open a basic Electron window displaying "
 
 <img src="./images/00-first-Electron_screen.png" width="60%" height="60%">
 
+# Second step: create panes as specified
 *I'm at this stage at 17:20 of Monday April 14, 2025. Successful execution*
