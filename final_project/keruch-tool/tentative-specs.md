@@ -99,7 +99,7 @@ Understanding this distinction is fundamental for managing your Electron-based T
 
 By framing the explanation with analogies to front-end/back-end concepts and highlighting the differences in environment and responsibility, a React developer can more easily grasp the fundamental separation of concerns in Electron's architecture. Emphasize that while the rendering part will feel familiar, the concept of a separate Main Process and the need for IPC are new concepts to learn.
 
-### Integrating AI TypeScript Libraries:**
+### Integrating AI TypeScript Libraries
 
 - Install your AI TypeScript libraries using `npm install <library-name>`.
 - Ensure you have the corresponding type definitions installed (often they come bundled with the library or are available as `@types/<library-name>`).
