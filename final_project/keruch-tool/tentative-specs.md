@@ -160,7 +160,7 @@ npm install --save-dev electron # install electron and dependencies
 ### Configure `npm` Start Script
 The command `npm init` has created a `package.json` file. We modify it to include scripts for building our TypeScript code and starting the Electron application.
 
-The Start Script is 
+The Start Script in the modified `package.json` file is 
 ``` json
 {
   "name": "ai-solidity-ide",
