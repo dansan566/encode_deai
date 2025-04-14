@@ -231,8 +231,6 @@ app.on('activate', () => {
 });
 ```
 
-*I'm at thsi stage at 16:45 of Monday April 14, 2025. No error detected in Cursor*
-
 ### Basic HTML page `src/index.html`
 ``` html
 <!DOCTYPE html>
@@ -263,6 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 ``` 
+
+*I'm at thsi stage at 16:45 of Monday April 14, 2025. No error detected in Cursor*
 
 ### Run the Basic Electron App:
 
