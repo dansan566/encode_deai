@@ -342,8 +342,8 @@ We modify the `index.html` to include the basic structure for multiple panes. We
           <div class="sidebar">
             <h3>Developer Chat</h3>
             <ul>
-              <li>File 1</li>
-              <li>File 2</li>
+              <li>Prompt...</li>
+              <li>– AI Answer</li>
             </ul>
           </div>
           <div class="editor-area">
@@ -352,7 +352,7 @@ We modify the `index.html` to include the basic structure for multiple panes. We
           </div>
           <div class="utility-panel">
             <h3>Solidity Auditor</h3>
-            <pre>Output will go here...</pre>
+            <pre>Auditor chat will go here...</pre>
           </div>
           <div class="status-bar">
             Status: Ready
