@@ -189,6 +189,8 @@ The Start Script in the modified `package.json` file is
 
 
 ## Application Code
+*I'm at thsi stage at 16:45 of Monday April 14, 2025. No error detected in Cursor*
+
 ### Basic Electron application code `src/main`
 
 ``` TypeScript
