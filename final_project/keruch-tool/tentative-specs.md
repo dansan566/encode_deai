@@ -276,7 +276,7 @@ Run the app.
 
 ``` Bash
 npm start
-
+```
 This should compile the TypeScript and open a basic Electron window displaying "Welcome to the Interactive Solidity Code Tool!" and "This is running in the renderer process!".
 
 #### Error message
