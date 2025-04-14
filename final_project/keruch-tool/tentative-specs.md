@@ -14,7 +14,11 @@ I imagine the UX of 4 pieces:
 ![UI](./images/chatgpt_image_apr_13_2025_10_51_03_pm.png)
 
 ## First steps: Electron
-Let's start with Electron, because VS Code is based on Electron and what we'll do is much like VS Code.
+Let's do our project with `Electron`, because what we'll do is much like VS Code and VS Code is based on Electron.
+
+Using AI libraries, it is strongly recommended to use TypeScript. We'll use TypeScript (and `ts-node`). 
+We can still develop in TypeScript without `ts-node`. But before running a `npm` script, we must run the compiler `tsc` on our `.ts` files. 
+Until now, I build NextJS projects, this is why I don't need `ts-node`. But in Electron it is not recommended to make a project without `ts-node`.
 
 Disclaimer: the code below is made by reading the docs and has not been tested yet as of Monday 14 April 2025.
 
@@ -78,7 +82,10 @@ By framing the explanation with analogies to front-end/back-end concepts and hig
 
 ## First steps: basic app
 ### Use Type Script
-Coming from React / NextJS and using AI libraries, we are used to TypeScript. We'll use TypeScript (and possibly `ts-node`). 
+Using AI libraries, it is strongly recommended to use TypeScript. We'll use TypeScript (and `ts-node`). 
+We can still develop in TypeScript without `ts-node`. But before running a `npm` script, we must run the compiler `tsc` on our `.ts` files. 
+Until now, I build NextJS projects, this is why I don't need `ts-node`. But in Electron it is not recommended to make a project without `ts-node`.
+
 
 We check that Node TypeScript and the libraries are installed
 ``` bash
@@ -88,8 +95,6 @@ ts-node -v  # check ts-node is installed. I have no ts-node
 # cd to the project folder to check the node_modules
 ls node_modules/@types/
 ```
-I can still develop in TypeScript without `ts-node`. But before running a `npm` script, I must run the compiler `tsc` on my `.ts` files.
-Until now, I use TypeScript in NextJS projects, this is why I don't need `ts-node`. But I don't know with Electron. Let's try without `ts-node` and see.
 
 If we don't have TypeScript already installed, we install it with its development tools
 ``` bash
