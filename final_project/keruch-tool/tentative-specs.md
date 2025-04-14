@@ -262,11 +262,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ``` 
 
-*I'm at this stage at 16:45 of Monday April 14, 2025. No error detected in Cursor*
+*I'm at this stage at 17:00 of Monday April 14, 2025. No error detected in Cursor*
 
 ### Run the Basic Electron App:
 
-Execute the following command in our terminal to set up the dependencies:
+Set up the dependencies bt executing the following command in our terminal :
 ``` Bash
 npm install 
 ``` 
