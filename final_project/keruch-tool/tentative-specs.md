@@ -279,7 +279,7 @@ npm start
 ```
 This should compile the TypeScript and open a basic Electron window displaying "Welcome to the Interactive Solidity Code Tool!" and "This is running in the renderer process!".
 
-#### Error message
+### First execution. First Error message
 The Electron app is running but with a blank window. The terminal has the following message
 ``` Bash
 kvutien@MacBookPro ai-solidity-ide % npm start
