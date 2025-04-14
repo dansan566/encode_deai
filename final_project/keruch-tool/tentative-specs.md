@@ -290,7 +290,7 @@ Now that we have a basic Electron app set up with TypeScript, the next step is t
 
 ###  **Structure the `index.html` for Panes:**
 
-We Modify the `index.html` to include the basic structure for multiple panes. We can use CSS Grid or Flexbox for this. Here's a basic example using CSS Grid:
+We modify the `index.html` to include the basic structure for multiple panes. We can use CSS Grid or Flexbox for this. Here's a basic example using CSS Grid:
 
 ``` html
 <!DOCTYPE html>
@@ -363,7 +363,7 @@ We Modify the `index.html` to include the basic structure for multiple panes. We
 ```
  This provides a basic structure with a sidebar, an editor area, a utility panel (for output or a terminal), and a status bar. You'll likely want to refine the CSS for a more polished look and feel.
 
-<img src="./images/01-3Panes-Electron_screen.png" width="60%" height="60%">
+<img src="./images/01-3Panes-Electron_screen.png" width="70%" height="70%">
 
 *I'm at this stage at 17:50 of Monday April 14, 2025. Successful execution*
 
