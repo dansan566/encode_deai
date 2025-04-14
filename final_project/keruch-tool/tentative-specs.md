@@ -22,12 +22,14 @@ We'll use TypeScript and `ts-node`.
 
 We check that Node TypeScript and the libraries are installed
 ``` bash
-node -v     # check nodejs is installed
-tsc -v      # check typescript compiler is installed
-ts-node -v  # check ts-node is installed
+node -v     # check nodejs is installed. Mine is v22.14.0
+tsc -v      # check typescript compiler is installed. Mine is Version 5.6.3
+ts-node -v  # check ts-node is installed. I have no ts-node
 # cd to the project folder to check the node_modules
 ls node_modules/@types/
 ```
+I can still develop in TypeScript without `ts-node`. But before running a `npm` script, I must run the compiler `tsc` on my `.ts` files.
+Until now, I use TypeScript in NextJS projects, this is why I don't need `ts-node`. But I don't know with Electron. Let's try without `ts-node` and see.
 
 If we don't have TypeScript already installed, we install it with its development tools
 ``` bash
