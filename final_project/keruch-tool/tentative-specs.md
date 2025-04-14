@@ -30,7 +30,7 @@ Think of Electron's architecture as having a distinct 'back-end' and 'front-end'
 * **The Renderer Process is like the 'front-end'**: This is where your actual user interface lives. Each window in your Electron application gets its own Renderer Process. This process is essentially a Chromium browser instance, and it's where your React code (or any web technology like HTML, CSS, JavaScript) gets rendered and interacts with the user."
 
 ### Differences between the folders `src` and `dist`
-In an Electron-based TypeScript project, the src and dist folders serve distinct and crucial roles in the development and build process. Here's a breakdown of their differences:
+In an Electron-based TypeScript project, the `src` and `dist` folders serve distinct and crucial roles in the development and build process. Here's a breakdown of their differences:
 1. You write and edit your code in the src folder using TypeScript.
 2. You run a build process (often using tools like tsc - the TypeScript compiler - and potentially other build tools like Webpack or Parcel).
 3. The build process takes the TypeScript files from src, compiles them into JavaScript, and places the output along with other necessary assets into the dist folder.
