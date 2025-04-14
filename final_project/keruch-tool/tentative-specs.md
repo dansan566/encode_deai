@@ -85,7 +85,7 @@ The Start Script is
 - `build`: Compiles your TypeScript code.
 - `start`: Runs the build script and then starts the Electron application. The `.` refers to the current directory, which should contain the compiled `main.js`
 
-### Basic Electron application code `src/main`
+### Basic Electron application code `dist/main`
 
 ``` TypeScript
 import { app, BrowserWindow } from 'electron';
