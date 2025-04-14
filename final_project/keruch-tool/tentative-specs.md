@@ -297,7 +297,7 @@ We modify the `index.html` to include the basic structure for multiple panes. We
 <html>
 <head>
           <meta charset="UTF-8">
-          <title>Solidity Code Tool</title>
+          <title>Interactive Solidity Code Tool</title>
           <style>
             body {
               margin: 0;
