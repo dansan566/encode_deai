@@ -37,6 +37,17 @@ In an Electron-based TypeScript project, the src and dist folders serve distinct
 4. Electron is then configured to run the JavaScript files located in the dist folder.
 5. When you package your application for distribution, you typically package the contents of the dist folder.
 
+**In summary:**
+
+| Feature        | `src`                                  | `dist`                                      |
+| -------------- | -------------------------------------- | ------------------------------------------- |
+| **Purpose** | Source code, development files        | Build output, distribution-ready files     |
+| **Language** | Primarily TypeScript (`.ts`)            | Primarily JavaScript (`.js`), HTML, CSS, assets |
+| **Readiness** | Not directly executable by Electron    | Executable by Electron                     |
+| **Modification** | Actively edited during development     | Generally not directly modified             |
+| **Build Process** | Input to the build process             | Output of the build process                |
+
+Understanding this distinction is fundamental for managing your Electron-based TypeScript project effectively. It helps you organize your code, manage the build process, and prepare your application for deployment.
 
 ### Key Differences and Analogies to React Concepts:
 
@@ -67,7 +78,7 @@ By framing the explanation with analogies to front-end/back-end concepts and hig
 
 ## First steps: basic app
 ### Use Type Script
-Coming from RTeact and NextJS, we are used to TypeScript. We'll use TypeScript (and possibly `ts-node`). 
+Coming from React / NextJS and using AI libraries, we are used to TypeScript. We'll use TypeScript (and possibly `ts-node`). 
 
 We check that Node TypeScript and the libraries are installed
 ``` bash
