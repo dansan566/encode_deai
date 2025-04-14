@@ -342,7 +342,7 @@ We modify the `index.html` to include the basic structure for multiple panes. We
           <div class="sidebar">
             <h3>Developer Chat</h3>
             <ul>
-              <li>Prompt...</li>
+              <li>> Prompt...</li>
               <li>– AI Answer</li>
             </ul>
           </div>
