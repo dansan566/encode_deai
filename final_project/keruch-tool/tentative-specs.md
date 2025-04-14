@@ -164,7 +164,7 @@ Execute the following commands in our terminal:
 ``` Bash
 npm install 
 ``` 
-Think of `npm install` as setting up the toolbox for our project. WE need to gather all the necessary tools (dependencies) before WE can start building. WE only need to run `npm install` when the contents of our toolbox configuration (`package.json`) have changed or if the toolbox itself (`node_modules`) is missing. For simply running our already set-up project, WE don't need to run it repeatedly.
+Think of `npm install` as setting up the toolbox for our project. We need to gather all the necessary tools (dependencies) before WE can start building. We only need to run `npm install` when the contents of our toolbox configuration (`package.json`) have changed or if the toolbox itself (`node_modules`) is missing. For simply running our already set-up project, WE don't need to run it repeatedly.
 
 ``` Bash
 npm start
