@@ -13,15 +13,15 @@ I imagine the UX of 4 pieces:
 ### AI generated design
 ![UI](./images/chatgpt_image_apr_13_2025_10_51_03_pm.png)
 
-## First steps: basic app
+## First steps: Electron
 Let's start with Electron, because VS Code is based on Electron and what we'll do is much like VS Code.
 
 Disclaimer: the code below is made by reading the docs and has not been tested yet as of Monday 14 April 2025.
 
-### Need to know about Electron vs. React
+## Need to know about Electron vs. React
 When introducing the Main and Renderer processes in Electron to a React developer, you can draw parallels to concepts they're already familiar with, while also highlighting the key differences. Here's a way to explain it:
 
-#### Analogy to Front-end vs. Back-end (Simplified):
+### Analogy to Front-end vs. Back-end (Simplified):
 
 Think of Electron's architecture as having a distinct 'back-end' and 'front-end', though both run locally on the user's machine.
 
@@ -29,7 +29,7 @@ Think of Electron's architecture as having a distinct 'back-end' and 'front-end'
 
 * **The Renderer Process is like the 'front-end'**: This is where your actual user interface lives. Each window in your Electron application gets its own Renderer Process. This process is essentially a Chromium browser instance, and it's where your React code (or any web technology like HTML, CSS, JavaScript) gets rendered and interacts with the user."
 
-#### Differences between the folders `src` and `dist`
+### Differences between the folders `src` and `dist`
 In an Electron-based TypeScript project, the src and dist folders serve distinct and crucial roles in the development and build process. Here's a breakdown of their differences:
 1. You write and edit your code in the src folder using TypeScript.
 2. You run a build process (often using tools like tsc - the TypeScript compiler - and potentially other build tools like Webpack or Parcel).
@@ -38,7 +38,7 @@ In an Electron-based TypeScript project, the src and dist folders serve distinct
 5. When you package your application for distribution, you typically package the contents of the dist folder.
 
 
-#### Key Differences and Analogies to React Concepts:
+### Key Differences and Analogies to React Concepts:
 
 1.  **Environment:**
     * **Main Process:** "The Main Process runs in a full Node.js environment. This means you have access to all Node.js APIs and modules directly. Think of it like your server-side code in a full-stack React application (though it's still running locally)."
@@ -59,13 +59,13 @@ In an Electron-based TypeScript project, the src and dist folders serve distinct
     * "The distinction between the Main and Renderer processes isn't directly analogous to the difference between `.ts` and `.tsx` files. `.ts` files are TypeScript files that can contain any TypeScript code, while `.tsx` files specifically allow for JSX syntax within your TypeScript, which is primarily used for defining React components.
     * Think of it this way: both the Main and Renderer processes can be written in TypeScript (`.ts`). If you're building your UI with React in the Renderer process, you'll be using `.tsx` files there. The Main process, which doesn't deal with UI rendering in the same way, will typically use `.ts` files."
 
-#### Key Takeaway for a React Developer:
+### Key Takeaway for a React Developer:
 
 "As a React developer, you'll likely spend most of your time writing code that runs in the **Renderer Process** using your familiar React patterns and libraries. The **Main Process** will handle the more 'system-level' tasks and act as a bridge between your UI and the underlying operating system. You'll need to learn about IPC to enable communication between your React UI in the Renderer and the Main process for tasks that require OS-level permissions or backend-like functionality."
 
 By framing the explanation with analogies to front-end/back-end concepts and highlighting the differences in environment and responsibility, a React developer can more easily grasp the fundamental separation of concerns in Electron's architecture. Emphasize that while the rendering part will feel familiar, the concept of a separate Main Process and the need for IPC are new concepts to learn.
 
-
+## First steps: basic app
 ### Use Type Script
 Coming from RTeact and NextJS, we are used to TypeScript. We'll use TypeScript (and possibly `ts-node`). 
 
