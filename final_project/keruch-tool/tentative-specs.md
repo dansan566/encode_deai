@@ -31,11 +31,11 @@ Think of Electron's architecture as having a distinct 'back-end' and 'front-end'
 
 ### Differences between the folders `src` and `dist`
 In an Electron-based TypeScript project, the `src` and `dist` folders serve distinct and crucial roles in the development and build process. Here's a breakdown of their differences:
-1. You write and edit your code in the src folder using TypeScript.
-2. You run a build process (often using tools like tsc - the TypeScript compiler - and potentially other build tools like Webpack or Parcel).
-3. The build process takes the TypeScript files from src, compiles them into JavaScript, and places the output along with other necessary assets into the dist folder.
-4. Electron is then configured to run the JavaScript files located in the dist folder.
-5. When you package your application for distribution, you typically package the contents of the dist folder.
+1. You write and edit your code in the `src` folder using TypeScript.
+2. You run a build process (often using tools like `tsc` - the TypeScript compiler - and potentially other build tools like Webpack or Parcel).
+3. The build process takes the TypeScript files from `src`, compiles them into JavaScript, and places the output along with other necessary assets into the `dist` folder.
+4. Electron is then configured to run the JavaScript files located in the `dist` folder.
+5. When you package your application for distribution, you typically package the contents of the `dist` folder.
 
 **In summary:**
 
