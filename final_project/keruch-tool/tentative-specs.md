@@ -231,7 +231,7 @@ app.on('activate', () => {
 });
 ```
 
-### Basic HTML page `src/index.html`
+### Basic HTML page `./index.html`
 ``` html
 <!DOCTYPE html>
 <html>
@@ -262,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ``` 
 
-*I'm at this stage at 17:00 of Monday April 14, 2025. No error detected in Cursor*
 
 ### Run the Basic Electron App:
 
@@ -279,18 +278,8 @@ npm start
 ```
 This should compile the TypeScript and open a basic Electron window displaying "Welcome to the Interactive Solidity Code Tool!" and "This is running in the renderer process!".
 
-### First execution. First Error message
-The Electron app is running but with a blank window. The terminal has the following message
-``` Bash
-kvutien@MacBookPro ai-solidity-ide % npm start
+### First execution. First Welcome Screen
 
-> ai-solidity-ide@0.0.1 start
-> npm run build && electron ./dist/main.js
+<img src="./images/00-first-Electron_screen.png" width="60%" height="60%">
 
-
-> ai-solidity-ide@0.0.1 build
-> tsc -p tsconfig.json
-
-(node:75141) electron: Failed to load URL: file:///Users/kvutien/develop/hackhathons/EnClub_2025_AI_Bootcamp/encode_deai_w4/final_project/keruch-tool/ai-solidity-ide/index.html with error: ERR_FILE_NOT_FOUND
-(Use `Electron --trace-warnings ...` to show where the warning was created)
-``` Bash
+*I'm at this stage at 17:20 of Monday April 14, 2025. Successful execution*
