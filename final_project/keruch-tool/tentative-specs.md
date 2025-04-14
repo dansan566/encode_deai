@@ -23,6 +23,8 @@ Until now, I build NextJS projects, this is why I don't need `ts-node`. But in E
 Disclaimer: the code below is made by reading the docs and has not been tested yet as of Monday 14 April 2025.
 
 ## Need to know about Electron vs. React
+*Deep-dive contact with Electron to start coding*
+
 When introducing the Main and Renderer processes in Electron to a React developer, you can draw parallels to concepts they're already familiar with, while also highlighting the key differences. Here's a way to explain it:
 
 ### Analogy to Front-end vs. Back-end (Simplified):
