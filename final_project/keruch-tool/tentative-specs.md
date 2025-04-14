@@ -118,12 +118,15 @@ We check that Node TypeScript and the libraries are installed
 ``` bash
 node -v     # check nodejs is installed. Mine is v22.14.0
 tsc -v      # check typescript compiler is installed. Mine is Version 5.6.3
-ts-node -v  # check ts-node is installed. I have no ts-node
+ts-node -v  # check ts-node is installed. I have no ts-node installed globally
 # cd to the project folder to check the node_modules
 ls node_modules/@types/
 ```
 
-If we don't have TypeScript already installed, we install it with its development tools
+If we don't have TypeScript already installed, we install it with its development tools.
+For this punctual development, I'll do the following installations in the next step below, in the local `node_modules` instead of doing so globally. 
+But to record my learning, I write here the commands.
+
 ``` bash
 npm install --save-dev typescript ts-node @types/node @types/electron
 ```
@@ -151,6 +154,7 @@ mkdir ai-solidity-ide           # create project folder
 cd ai-solidity-ide              # go to the folder
 npm init -y                     # initialize project
 npm install --save-dev electron # install electron and dependencies
+#       install here locally ts-node and its electron types
 ```
 
 ### Configure `npm` Start Script
