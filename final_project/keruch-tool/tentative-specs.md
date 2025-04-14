@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ``` 
 
-*I'm at thsi stage at 16:45 of Monday April 14, 2025. No error detected in Cursor*
+*I'm at this stage at 16:45 of Monday April 14, 2025. No error detected in Cursor*
 
 ### Run the Basic Electron App:
 
