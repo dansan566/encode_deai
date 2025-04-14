@@ -146,7 +146,7 @@ app.on('activate', () => {
 
 Create a `dist/renderer.ts` file:
 ``` Bash
-touch src/renderer.ts
+touch dist/renderer.ts
 ``` 
 Add some basic content to `dist/renderer.ts`:
 ``` TypeScript
