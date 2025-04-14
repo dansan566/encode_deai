@@ -141,3 +141,30 @@ app.on('activate', () => {
   <script src="./dist/renderer.js"></script> </body>
 </html>
 ```
+
+### Create our Renderer Process TypeScript (renderer.ts):
+
+Create a `dist/renderer.ts` file:
+``` Bash
+touch src/renderer.ts
+``` 
+Add some basic content to `dist/renderer.ts`:
+``` TypeScript
+document.addEventListener('DOMContentLoaded', () => {
+  const appDiv = document.getElementById('app');
+  if (appDiv) {
+    appDiv.textContent = 'This is running in the renderer process!';
+  }
+});
+``` 
+
+### Run the Basic Electron App:
+
+Execute the following commands in our terminal:
+``` Bash
+npm install 
+npm start
+``` 
+This should compile the TypeScript and open a basic Electron window displaying "Welcome to the Interactive Solidity Code Tool!" and "This is running in the renderer process!".
+
+Think of `npm install` as setting up the toolbox for our project. WE need to gather all the necessary tools (dependencies) before WE can start building. WE only need to run `npm install` when the contents of our toolbox configuration (`package.json`) have changed or if the toolbox itself (`node_modules`) is missing. For simply running our already set-up project, WE don't need to run it repeatedly.
