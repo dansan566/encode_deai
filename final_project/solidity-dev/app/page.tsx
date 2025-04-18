@@ -80,10 +80,26 @@ contract MyContract {
 
     try {
       const response = await getDeveloperResponse([...developerMessages, userMessage])
-      setDeveloperMessages((prev) => [...prev, { role: "assistant", content: response || "Sorry, I couldn't process your request." }])
+      setDeveloperMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response || "Sorry, I couldn't process your request." }
+      ])
+
+      // Extract Solidity code block if present
+      if (response) {
+        // Matches ```solidity\n...``` or ```...```
+        const codeMatch = response.match(/```solidity\n([\s\S]*?)```|```([\s\S]*?)```/)
+        const extractedCode = codeMatch?.[1] || codeMatch?.[2]
+        if (extractedCode) {
+          setCode(extractedCode.trim())
+        }
+      }
     } catch (error) {
       console.error("Error getting developer response:", error)
-      setDeveloperMessages((prev) => [...prev, { role: "assistant", content: "Sorry, there was an error processing your request." }])
+      setDeveloperMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, there was an error processing your request." }
+      ])
     } finally {
       setIsDeveloperLoading(false)
     }
