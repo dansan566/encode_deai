@@ -76,8 +76,10 @@ pnpm dev
 solidity-dev/
 ├── app/
 │   ├── api/              # API routes for OpenAI integration
+│   │   └── chat/        # Chat API endpoints
 │   ├── components/       # React components
 │   ├── lib/             # Utility functions and configurations
+│   │   └── openai.ts    # OpenAI API utilities
 │   └── page.tsx         # Main application page
 ├── components/
 │   ├── chat-message.tsx # Chat message component
@@ -87,6 +89,23 @@ solidity-dev/
 │   └── wallet-provider.tsx # Wallet integration
 └── public/              # Static assets
 ```
+
+## Import Paths
+
+The project uses Next.js's built-in path aliases. Make sure your `tsconfig.json` includes the following path configuration:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+This allows you to use imports like `@/lib/openai` which will resolve to `app/lib/openai.ts`.
 
 ## Technologies Used
 
