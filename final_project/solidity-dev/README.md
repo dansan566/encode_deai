@@ -37,12 +37,15 @@ OPENAI_API_KEY=your_openai_api_key
 ## Installation
 
 1. Clone the repository
-2. Install dependencies:
+2. navigate to `solidity-dev` directory
+```bash
+cd final_project/solidity-dev
+```
+3. Install dependencies:
 ```bash
 pnpm install
 ```
-
-3. Start the development server:
+4. Start the development server:
 ```bash
 pnpm dev
 ```
