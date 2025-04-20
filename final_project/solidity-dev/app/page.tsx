@@ -172,7 +172,16 @@ contract MyContract {
   const triggerAudit = async (codeToAudit: string) => {
     setIsAuditorLoading(true)
     try {
-      const res = await fetch("/api/chat", {
+      setAuditorMessages((prev) => [
+        ...prev,
+        { role: "user", content: `Please audit this code:\n\n${codeToAudit}` }
+      ])
+      setAuditorMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "" }
+      ])
+      let assistantContent = ""
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -182,14 +191,35 @@ contract MyContract {
           role: "auditor"
         })
       })
-      const data = await res.json()
-      setAuditorMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: `I've analyzed the new code:\n\n${data.content || "Sorry, I couldn't process your request."}`,
-        },
-      ])
+      if (!response.body) throw new Error("No response body")
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let done = false
+      while (!done) {
+        const { value, done: doneReading } = await reader.read()
+        done = doneReading
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true })
+          const lines = chunk.split('\n').filter(Boolean)
+          for (const line of lines) {
+            const jsonStr = line.startsWith('data: ') ? line.slice(6) : line
+            if (jsonStr.trim() === '[DONE]') continue
+            try {
+              const data = JSON.parse(jsonStr)
+              const token = data.choices?.[0]?.delta?.content
+              if (token) {
+                assistantContent += token
+                setAuditorMessages((prev) => {
+                  const withoutLast = prev.slice(0, -1)
+                  return [...withoutLast, { role: "assistant", content: assistantContent }]
+                })
+              }
+            } catch (e) {
+              // Ignore lines that aren't valid JSON
+            }
+          }
+        }
+      }
     } catch (error) {
       setAuditorMessages((prev) => [
         ...prev,
