@@ -83,9 +83,6 @@ export async function POST(request: Request) {
   let stream: any = null;
   if (typeof completion.toReadableStream === "function") {
     stream = completion.toReadableStream();
-  } else if (completion.body) {
-    // @ts-expect-error: body may exist
-    stream = completion.body;
   } else {
     throw new Error("No valid stream returned from OpenAI SDK");
   }
