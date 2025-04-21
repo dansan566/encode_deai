@@ -11,7 +11,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, Send, Code, AlertTriangle, Wallet, Bot, User, Terminal, Shield } from "lucide-react"
+import { Loader2, Send, Code, AlertTriangle, Wallet, Bot, User, Terminal, Shield, CheckCircle } from "lucide-react"
 import SolidityEditor from "@/components/solidity-editor"
 import ChatMessage from "@/components/chat-message"
 import WalletConnect from "@/components/wallet-connect"
@@ -19,6 +19,9 @@ import DeployContract from "@/components/deploy-contract"
 import KnowledgeUploader from "@/components/knowledge-uploader"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useAccount, useWalletClient } from "wagmi"
+import { ethers } from "ethers"
+
 export type Message = {
   role: "user" | "assistant" | "system"
   content: string
@@ -59,9 +62,21 @@ contract MyContract {
   const [isAuditorLoading, setIsAuditorLoading] = useState(false)
   const [isDevCollapsed, setIsDevCollapsed] = useState(false)
   const [isAuditorCollapsed, setIsAuditorCollapsed] = useState(false)
+  const [compileError, setCompileError] = useState<string | null>(null)
+  const [compileStatus, setCompileStatus] = useState<string | null>(null)
+  const [showCompileDialog, setShowCompileDialog] = useState(false)
+  const [isCompiling, setIsCompiling] = useState(false)
+  const [deployStatus, setDeployStatus] = useState<string | null>(null)
+  const [contractAddress, setContractAddress] = useState<string | null>(null)
+  const [constructorArgs, setConstructorArgs] = useState<any[]>([])
+  const [constructorInputs, setConstructorInputs] = useState<any[]>([])
+  const [showConstructorModal, setShowConstructorModal] = useState(false)
+  const [pendingDeploy, setPendingDeploy] = useState<{ abi: any; bytecode: string } | null>(null)
   const developerEndRef = useRef<HTMLDivElement>(null)
   const auditorEndRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
+  const { isConnected } = useAccount()
+  const { data: walletClient } = useWalletClient()
 
   useEffect(() => {
     if (developerEndRef.current) {
@@ -74,6 +89,15 @@ contract MyContract {
       auditorEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
   }, [auditorMessages])
+
+  useEffect(() => { setCompileStatus(null) }, [code])
+
+  useEffect(() => {
+    if (compileStatus) {
+      const timer = setTimeout(() => setCompileStatus(null), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [compileStatus])
 
   // Shared streaming chat handler
   const streamChat = async (
@@ -131,8 +155,8 @@ contract MyContract {
           }
         }
       }
-      // Optionally extract code for developer
-      if (role === "developer" && codeHandler) {
+      // Optionally extract code for developer or auditor
+      if ((role === "developer" || role === "auditor") && codeHandler) {
         const codeMatch = assistantContent.match(/```solidity\n([\s\S]*?)```|```([\s\S]*?)```/);
         const extractedCode = codeMatch?.[1] || codeMatch?.[2];
         if (extractedCode) codeHandler(extractedCode.trim());
@@ -168,7 +192,8 @@ contract MyContract {
       setAuditorInput,
       auditorMessages,
       setAuditorMessages,
-      setIsAuditorLoading
+      setIsAuditorLoading,
+      setCode
     );
   };
 
@@ -236,17 +261,120 @@ contract MyContract {
     }
   }
 
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
     setIsDeployerLoading(true)
-
-    // Simulate deployment
-    setTimeout(() => {
-      toast({
-        title: "Contract deployed",
-        description: "Contract successfully deployed to the selected network",
+    setDeployStatus(null)
+    setContractAddress(null)
+    try {
+      // 1. Compile code
+      const res = await fetch("/api/compile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
       })
+      const data = await res.json()
+      if (!data.success) {
+        setDeployStatus("Compilation failed: " + (Array.isArray(data.errors) ? data.errors.join("\n") : data.error))
+        setIsDeployerLoading(false)
+        return
+      }
+      // 2. Get ABI and bytecode
+      const contractFile = Object.keys(data.output.contracts["Contract.sol"])[0]
+      const contract = data.output.contracts["Contract.sol"][contractFile]
+      const abi = contract.abi
+      const bytecode = contract.evm.bytecode.object
+      // Check for constructor inputs
+      const constructorAbi = abi.find((item: any) => item.type === "constructor")
+      if (constructorAbi && constructorAbi.inputs.length > 0) {
+        setConstructorInputs(constructorAbi.inputs)
+        setConstructorArgs(Array(constructorAbi.inputs.length).fill(""))
+        setPendingDeploy({ abi, bytecode })
+        setShowConstructorModal(true)
+        setIsDeployerLoading(false)
+        return
+      }
+      // No args, deploy directly
+      await deployWithArgs(abi, bytecode, [])
+    } catch (err: any) {
+      setDeployStatus("Deployment failed: " + (err.message || String(err)))
       setIsDeployerLoading(false)
-    }, 2000)
+    }
+  }
+
+  const handleConstructorInputChange = (idx: number, value: string) => {
+    setConstructorArgs(args => args.map((v, i) => (i === idx ? value : v)))
+  }
+
+  const deployWithArgs = async (abi: any, bytecode: string, args: any[]) => {
+    try {
+      if (!walletClient) {
+        setDeployStatus("No wallet connected.")
+        return
+      }
+      const provider = new ethers.BrowserProvider(walletClient)
+      const signer = await provider.getSigner()
+      const factory = new ethers.ContractFactory(abi, bytecode, signer)
+      setDeployStatus("Deploying contract...")
+      const contractInstance = await factory.deploy(...args)
+      setDeployStatus("Waiting for transaction confirmation...")
+      await contractInstance.waitForDeployment()
+      setDeployStatus("Contract deployed!")
+      setContractAddress(contractInstance.target)
+      toast({ title: "Contract deployed", description: contractInstance.target })
+    } catch (err: any) {
+      setDeployStatus("Deployment failed: " + (err.message || String(err)))
+    } finally {
+      setIsDeployerLoading(false)
+      setShowConstructorModal(false)
+      setPendingDeploy(null)
+    }
+  }
+
+  const handleConstructorSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (pendingDeploy) {
+      deployWithArgs(pendingDeploy.abi, pendingDeploy.bytecode, constructorArgs)
+    }
+  }
+
+  const handleCompile = async () => {
+    setCompileError(null)
+    setCompileStatus(null)
+    setIsCompiling(true)
+    try {
+      const res = await fetch("/api/compile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      })
+      const data = await res.json()
+      if (!data.success) {
+        setCompileError(Array.isArray(data.errors) ? data.errors.join("\n") : (data.error || "Unknown compile error"))
+        setShowCompileDialog(true)
+        setIsCompiling(false)
+        return
+      }
+      setCompileStatus("Compilation successful!")
+    } catch (err: any) {
+      setCompileError(err.message || "Unknown compile error")
+      setShowCompileDialog(true)
+    } finally {
+      setIsCompiling(false)
+    }
+  }
+
+  const handleSendToAuditor = () => {
+    setShowCompileDialog(false)
+    setAuditorInput("")
+    streamChat(
+      "auditor",
+      `Please fix this Solidity code so it compiles on Sepolia:\n\n${code}`,
+      setAuditorInput,
+      auditorMessages,
+      setAuditorMessages,
+      setIsAuditorLoading,
+      setCode
+    )
   }
 
   const simulateDeveloperResponse = (input: string) => {
@@ -460,13 +588,34 @@ contract SimpleStorage {
 
         {/* Code Editor */}
         <ResizablePanel defaultSize={40} minSize={30}>
-          <Card className="h-full flex flex-col">
+          <Card className="h-full flex flex-col relative">
             <CardHeader className="flex flex-row items-center gap-2 py-3">
               <Code className="h-5 w-5 text-primary" />
               <CardTitle>Code Editor</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 p-0 h-[calc(100%-3.5rem)] overflow-hidden">
-              <SolidityEditor value={code} onChange={setCode} onAudit={() => triggerAudit(code)} />
+              <SolidityEditor 
+                value={code}
+                onChange={setCode}
+                onAudit={() => triggerAudit(code)}
+                onCompile={handleCompile}
+                isCompiling={isCompiling}
+              />
+              {compileStatus && (
+                <div className="absolute bottom-8 right-8 z-40">
+                  <div className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded shadow-lg animate-fade-in">
+                    <CheckCircle className="h-5 w-5" />
+                    <span>{compileStatus}</span>
+                    <button
+                      className="ml-2 text-white/80 hover:text-white text-lg leading-none"
+                      onClick={() => setCompileStatus(null)}
+                      aria-label="Dismiss"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </ResizablePanel>
@@ -541,8 +690,66 @@ contract SimpleStorage {
             isLoading={isDeployerLoading}
             onDeploy={handleDeploy}
           />
+          {deployStatus && (
+            <div className="mt-2 text-sm">
+              <div>{deployStatus}</div>
+              {contractAddress && (
+                <div>
+                  <span className="font-semibold">Contract Address:</span>
+                  <a
+                    href={`https://sepolia.etherscan.io/address/${contractAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-2 underline text-primary"
+                  >
+                    {contractAddress}
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+          {/* Constructor Modal */}
+          {showConstructorModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <form onSubmit={handleConstructorSubmit} className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6 max-w-lg w-full">
+                <h2 className="text-lg font-semibold mb-4">Enter Constructor Arguments</h2>
+                {constructorInputs.map((input, idx) => (
+                  <div className="mb-3 flex flex-col" key={idx}>
+                    <label className="mb-1 font-medium text-sm">
+                      {input.name || `arg${idx+1}`} <span className="text-xs text-muted-foreground">({input.type})</span>
+                    </label>
+                    <input
+                      className="border px-2 py-1 rounded bg-background"
+                      type="text"
+                      value={constructorArgs[idx]}
+                      onChange={e => handleConstructorInputChange(idx, e.target.value)}
+                      required
+                    />
+                  </div>
+                ))}
+                <div className="flex gap-2 justify-end mt-4">
+                  <Button variant="outline" type="button" onClick={() => setShowConstructorModal(false)}>Cancel</Button>
+                  <Button variant="default" type="submit">Deploy</Button>
+                </div>
+              </form>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      {/* Compile Error Dialog */}
+      {showCompileDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6 max-w-lg w-full">
+            <h2 className="text-lg font-semibold mb-2">Compilation failed</h2>
+            <pre className="text-xs bg-zinc-100 dark:bg-zinc-800 p-2 rounded mb-4 max-h-40 overflow-auto whitespace-pre-wrap">{compileError}</pre>
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setShowCompileDialog(false)}>Cancel</Button>
+              <Button variant="default" onClick={handleSendToAuditor}>Send to Auditor to Fix</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

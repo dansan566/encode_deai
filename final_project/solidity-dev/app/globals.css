@@ -103,3 +103,15 @@
   @apply my-2;
   overflow-wrap: break-word;
 }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease;
+}
+
+.nextjs-toast {
+  display: none !important;
+}

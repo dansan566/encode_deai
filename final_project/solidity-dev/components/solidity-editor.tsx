@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle, CheckCircle } from "lucide-react"
+import { AlertTriangle, CheckCircle, Loader2 } from "lucide-react"
 import Editor from "@monaco-editor/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
@@ -10,9 +10,11 @@ interface SolidityEditorProps {
   value: string
   onChange: (value: string) => void
   onAudit: () => void
+  onCompile: () => void
+  isCompiling: boolean
 }
 
-export default function SolidityEditor({ value, onChange, onAudit }: SolidityEditorProps) {
+export default function SolidityEditor({ value, onChange, onAudit, onCompile, isCompiling }: SolidityEditorProps) {
   const [mounted, setMounted] = useState(false)
 
   // Prevent hydration errors with Monaco editor
@@ -61,8 +63,8 @@ export default function SolidityEditor({ value, onChange, onAudit }: SolidityEdi
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="default" size="sm" className="flex items-center gap-1.5">
-                <CheckCircle className="h-4 w-4" />
+              <Button variant="default" size="sm" className="flex items-center gap-1.5" onClick={onCompile} disabled={isCompiling}>
+                {isCompiling ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
                 <span>Compile</span>
               </Button>
             </TooltipTrigger>
