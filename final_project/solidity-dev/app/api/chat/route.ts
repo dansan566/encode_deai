@@ -1,6 +1,8 @@
 import OpenAI from 'openai'
+import { VectorStore } from '@/lib/vector-store'
+import path from 'path'
 
-export const runtime = "edge"
+export const runtime = "nodejs" // Need nodejs for file access
 
 export type Message = {
   role: "user" | "assistant" | "system"
@@ -28,14 +30,46 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
+const vectorStore = new VectorStore(openai, path.join(process.cwd(), 'data', 'vector-store.json'))
+
 export async function POST(request: Request) {
   const { messages, role }: { messages: Message[]; role: "developer" | "auditor" } = await request.json();
   const systemPrompt = role === "auditor" ? auditorSystemPrompt : developerSystemPrompt;
-
+  
+  // Get the user's last message
+  const lastUserMessage = [...messages].reverse().find(msg => msg.role === "user");
+  
+  let contextualKnowledge = "";
+  
+  // If we have a user message, enhance with RAG
+  if (lastUserMessage) {
+    try {
+      // Search for relevant knowledge
+      const results = await vectorStore.findSimilar(lastUserMessage.content, 3);
+      
+      if (results.length > 0) {
+        contextualKnowledge = "Here is some relevant information that might help:\n\n";
+        
+        for (const result of results) {
+          contextualKnowledge += `--- ${result.metadata.title || 'Document'} (${result.metadata.source}) ---\n`;
+          contextualKnowledge += result.text + "\n\n";
+        }
+      }
+    } catch (error) {
+      console.error("Error retrieving RAG context:", error);
+      // Continue without RAG if there's an error
+    }
+  }
+  
+  // Create enhanced system prompt with RAG
+  const enhancedSystemPrompt = contextualKnowledge 
+    ? `${systemPrompt}\n\n${contextualKnowledge}`
+    : systemPrompt;
+  
   const completion = await openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
     messages: [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: enhancedSystemPrompt },
       ...messages,
     ],
     temperature: 0.7,

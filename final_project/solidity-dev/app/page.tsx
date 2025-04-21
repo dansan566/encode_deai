@@ -16,6 +16,7 @@ import SolidityEditor from "@/components/solidity-editor"
 import ChatMessage from "@/components/chat-message"
 import WalletConnect from "@/components/wallet-connect"
 import DeployContract from "@/components/deploy-contract"
+import KnowledgeUploader from "@/components/knowledge-uploader"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 export type Message = {
@@ -240,7 +241,7 @@ contract MyContract {
     setTimeout(() => {
       toast({
         title: "Contract deployed",
-        description: "Contract successfully deployed to the network",
+        description: "Contract successfully deployed to the selected network",
       })
       setIsDeployerLoading(false)
     }, 2000)
@@ -391,6 +392,7 @@ contract SimpleStorage {
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline">v0.1.0</Badge>
+          <KnowledgeUploader />
           <WalletConnect />
         </div>
       </div>
