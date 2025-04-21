@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import solc from 'solc'
+const solc = require('solc');
 
 export const runtime = 'nodejs'
 
