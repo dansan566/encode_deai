@@ -57,6 +57,8 @@ contract MyContract {
   const [isDeployerLoading, setIsDeployerLoading] = useState(false)
   const [isDeveloperLoading, setIsDeveloperLoading] = useState(false)
   const [isAuditorLoading, setIsAuditorLoading] = useState(false)
+  const [isDevCollapsed, setIsDevCollapsed] = useState(false)
+  const [isAuditorCollapsed, setIsAuditorCollapsed] = useState(false)
   const developerEndRef = useRef<HTMLDivElement>(null)
   const auditorEndRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
@@ -398,47 +400,65 @@ contract SimpleStorage {
       </div>
 
       <ResizablePanelGroup direction="horizontal" className="flex-1 rounded-lg border">
-        <ResizablePanel defaultSize={30} minSize={20}>
-          <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2 py-3">
-              <Bot className="h-5 w-5 text-primary" />
-              <CardTitle>Developer Assistant</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 p-0 overflow-hidden">
-              <ScrollArea className="h-full p-4">
-                <div className="space-y-4 pr-2 max-w-full">
-                  {developerMessages.map((message, index) => (
-                    <ChatMessage key={index} role={message.role} content={message.content} />
-                  ))}
-                  <div ref={developerEndRef} />
-                </div>
-              </ScrollArea>
-            </CardContent>
-            <CardFooter className="p-4 border-t">
-              <form onSubmit={handleDeveloperSubmit} className="flex w-full gap-2">
-                <Input
-                  placeholder="Ask the developer assistant..."
-                  value={developerInput}
-                  onChange={(e) => setDeveloperInput(e.target.value)}
-                  disabled={isDeveloperLoading}
-                />
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button type="submit" size="icon" disabled={isDeveloperLoading}>
-                        {isDeveloperLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Send message</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </form>
-            </CardFooter>
-          </Card>
+        {/* Developer Panel or Sidebar */}
+        <ResizablePanel defaultSize={isDevCollapsed ? 5 : 30} minSize={isDevCollapsed ? 5 : 20} maxSize={isDevCollapsed ? 5 : 40} collapsible collapsed={isDevCollapsed}>
+          <div className="relative h-full">
+            <button
+              className="absolute top-2 right-2 z-10 rounded p-1 bg-background hover:bg-accent border shadow"
+              onClick={() => setIsDevCollapsed((v) => !v)}
+              aria-label={isDevCollapsed ? 'Expand Developer' : 'Collapse Developer'}
+              type="button"
+            >
+              {isDevCollapsed ? <Bot className="h-5 w-5 text-primary" /> : <span>&#x25C0;</span>}
+            </button>
+            {isDevCollapsed ? (
+              <div className="flex flex-col items-center justify-center h-full select-none">
+                <span className="transform -rotate-90 text-xs font-semibold text-muted-foreground">Developer</span>
+              </div>
+            ) : (
+              <Card className="h-full flex flex-col">
+                <CardHeader className="flex flex-row items-center gap-2 py-3">
+                  <Bot className="h-5 w-5 text-primary" />
+                  <CardTitle>Developer Assistant</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-0 overflow-hidden">
+                  <ScrollArea className="h-full p-4">
+                    <div className="space-y-4 pr-2 max-w-full">
+                      {developerMessages.map((message, index) => (
+                        <ChatMessage key={index} role={message.role} content={message.content} />
+                      ))}
+                      <div ref={developerEndRef} />
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+                <CardFooter className="p-4 border-t">
+                  <form onSubmit={handleDeveloperSubmit} className="flex w-full gap-2">
+                    <Input
+                      placeholder="Ask the developer assistant..."
+                      value={developerInput}
+                      onChange={(e) => setDeveloperInput(e.target.value)}
+                      disabled={isDeveloperLoading}
+                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button type="submit" size="icon" disabled={isDeveloperLoading}>
+                            {isDeveloperLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Send message</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </form>
+                </CardFooter>
+              </Card>
+            )}
+          </div>
         </ResizablePanel>
 
         <ResizableHandle />
 
+        {/* Code Editor */}
         <ResizablePanel defaultSize={40} minSize={30}>
           <Card className="h-full flex flex-col">
             <CardHeader className="flex flex-row items-center gap-2 py-3">
@@ -453,47 +473,64 @@ contract SimpleStorage {
 
         <ResizableHandle />
 
-        <ResizablePanel defaultSize={30} minSize={20}>
-          <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2 py-3">
-              <Shield className="h-5 w-5 text-primary" />
-              <CardTitle>Security Auditor</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 p-0 overflow-hidden">
-              <ScrollArea className="h-full p-4">
-                <div className="space-y-4 pr-2 max-w-full">
-                  {auditorMessages.map((message, index) => (
-                    <ChatMessage key={index} role={message.role} content={message.content} />
-                  ))}
-                  <div ref={auditorEndRef} />
-                </div>
-              </ScrollArea>
-            </CardContent>
-            <CardFooter className="p-4 border-t">
-              <form onSubmit={handleAuditorSubmit} className="flex w-full gap-2">
-                <Input
-                  placeholder="Ask the security auditor..."
-                  value={auditorInput}
-                  onChange={(e) => setAuditorInput(e.target.value)}
-                  disabled={isAuditorLoading}
-                />
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button type="submit" size="icon" disabled={isAuditorLoading}>
-                        {isAuditorLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Send message</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </form>
-            </CardFooter>
-          </Card>
+        {/* Auditor Panel or Sidebar */}
+        <ResizablePanel defaultSize={isAuditorCollapsed ? 5 : 30} minSize={isAuditorCollapsed ? 5 : 20} maxSize={isAuditorCollapsed ? 5 : 40} collapsible collapsed={isAuditorCollapsed}>
+          <div className="relative h-full">
+            <button
+              className="absolute top-2 left-2 z-10 rounded p-1 bg-background hover:bg-accent border shadow"
+              onClick={() => setIsAuditorCollapsed((v) => !v)}
+              aria-label={isAuditorCollapsed ? 'Expand Auditor' : 'Collapse Auditor'}
+              type="button"
+            >
+              {isAuditorCollapsed ? <Shield className="h-5 w-5 text-primary" /> : <span>&#x25B6;</span>}
+            </button>
+            {isAuditorCollapsed ? (
+              <div className="flex flex-col items-center justify-center h-full select-none">
+                <span className="transform -rotate-90 text-xs font-semibold text-muted-foreground">Auditor</span>
+              </div>
+            ) : (
+              <Card className="h-full flex flex-col">
+                <CardHeader className="flex flex-row items-center gap-2 py-3">
+                  <Shield className="h-5 w-5 text-primary" />
+                  <CardTitle>Security Auditor</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-0 overflow-hidden">
+                  <ScrollArea className="h-full p-4">
+                    <div className="space-y-4 pr-2 max-w-full">
+                      {auditorMessages.map((message, index) => (
+                        <ChatMessage key={index} role={message.role} content={message.content} />
+                      ))}
+                      <div ref={auditorEndRef} />
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+                <CardFooter className="p-4 border-t">
+                  <form onSubmit={handleAuditorSubmit} className="flex w-full gap-2">
+                    <Input
+                      placeholder="Ask the security auditor..."
+                      value={auditorInput}
+                      onChange={(e) => setAuditorInput(e.target.value)}
+                      disabled={isAuditorLoading}
+                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button type="submit" size="icon" disabled={isAuditorLoading}>
+                            {isAuditorLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Send message</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </form>
+                </CardFooter>
+              </Card>
+            )}
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
 
-      <Card className="flex-shrink-0">
+      <Card className="flex-shrink-0 mt-4">
         <CardHeader className="py-3">
           <CardTitle>Deploy Contract</CardTitle>
           <CardDescription>Deploy your smart contract to the selected network</CardDescription>
