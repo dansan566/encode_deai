@@ -18,7 +18,10 @@ import WalletConnect from "@/components/wallet-connect"
 import DeployContract from "@/components/deploy-contract"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { getDeveloperResponse, getAuditorResponse, type Message } from "@/lib/openai"
+export type Message = {
+  role: "user" | "assistant" | "system"
+  content: string
+}
 
 export default function SolidityDeveloper() {
   const [developerMessages, setDeveloperMessages] = useState<Message[]>([
@@ -69,84 +72,161 @@ contract MyContract {
     }
   }, [auditorMessages])
 
-  const handleDeveloperSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!developerInput.trim()) return
-
-    const userMessage: Message = { role: "user", content: developerInput }
-    setDeveloperMessages((prev) => [...prev, userMessage])
-    setDeveloperInput("")
-    setIsDeveloperLoading(true)
-
+  // Shared streaming chat handler
+  const streamChat = async (
+    role: "developer" | "auditor",
+    input: string,
+    setInput: React.Dispatch<React.SetStateAction<string>>,
+    messages: Message[],
+    setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    codeHandler?: (code: string) => void
+  ) => {
+    if (!input.trim()) return;
+    const userMessage: Message = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
     try {
-      const response = await getDeveloperResponse([...developerMessages, userMessage])
-      setDeveloperMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: response || "Sorry, I couldn't process your request." }
-      ])
-
-      // Extract Solidity code block if present
-      if (response) {
-        // Matches ```solidity\n...``` or ```...```
-        const codeMatch = response.match(/```solidity\n([\s\S]*?)```|```([\s\S]*?)```/)
-        const extractedCode = codeMatch?.[1] || codeMatch?.[2]
-        if (extractedCode) {
-          setCode(extractedCode.trim())
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      let assistantContent = "";
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+          role,
+        }),
+      });
+      if (!response.body) throw new Error("No response body");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          // Handle SSE: may contain multiple JSON lines
+          const lines = chunk.split('\n').filter(Boolean);
+          for (const line of lines) {
+            const jsonStr = line.startsWith('data: ') ? line.slice(6) : line;
+            if (jsonStr.trim() === '[DONE]') continue;
+            try {
+              const data = JSON.parse(jsonStr);
+              const token = data.choices?.[0]?.delta?.content;
+              if (token) {
+                assistantContent += token;
+                setMessages((prev) => {
+                  const withoutLast = prev.slice(0, -1);
+                  return [...withoutLast, { role: "assistant", content: assistantContent }];
+                });
+              }
+            } catch (e) {
+              // Ignore lines that aren't valid JSON
+            }
+          }
         }
       }
+      // Optionally extract code for developer
+      if (role === "developer" && codeHandler) {
+        const codeMatch = assistantContent.match(/```solidity\n([\s\S]*?)```|```([\s\S]*?)```/);
+        const extractedCode = codeMatch?.[1] || codeMatch?.[2];
+        if (extractedCode) codeHandler(extractedCode.trim());
+      }
     } catch (error) {
-      console.error("Error getting developer response:", error)
-      setDeveloperMessages((prev) => [
+      setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, there was an error processing your request." }
-      ])
+        { role: "assistant", content: "Sorry, there was an error processing your request." },
+      ]);
     } finally {
-      setIsDeveloperLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const handleDeveloperSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    streamChat(
+      "developer",
+      developerInput,
+      setDeveloperInput,
+      developerMessages,
+      setDeveloperMessages,
+      setIsDeveloperLoading,
+      setCode
+    );
+  };
 
   const handleAuditorSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!auditorInput.trim()) return
-
-    const userMessage: Message = { role: "user", content: auditorInput }
-    setAuditorMessages((prev) => [...prev, userMessage])
-    setAuditorInput("")
-    setIsAuditorLoading(true)
-
-    try {
-      const response = await getAuditorResponse([...auditorMessages, userMessage])
-      setAuditorMessages((prev) => [...prev, { role: "assistant", content: response || "Sorry, I couldn't process your request." }])
-    } catch (error) {
-      console.error("Error getting auditor response:", error)
-      setAuditorMessages((prev) => [...prev, { role: "assistant", content: "Sorry, there was an error processing your request." }])
-    } finally {
-      setIsAuditorLoading(false)
-    }
-  }
+    e.preventDefault();
+    streamChat(
+      "auditor",
+      auditorInput,
+      setAuditorInput,
+      auditorMessages,
+      setAuditorMessages,
+      setIsAuditorLoading
+    );
+  };
 
   const triggerAudit = async (codeToAudit: string) => {
     setIsAuditorLoading(true)
-
     try {
-      const response = await getAuditorResponse([
-        { role: "user", content: `Please audit this code:\n\n${codeToAudit}` } as Message
+      setAuditorMessages((prev) => [
+        ...prev,
+        { role: "user", content: `Please audit this code:\n\n${codeToAudit}` }
       ])
       setAuditorMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: `I've analyzed the new code:\n\n${response || "Sorry, I couldn't process your request."}`,
-        } as Message,
+        { role: "assistant", content: "" }
       ])
+      let assistantContent = ""
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            { role: "user", content: `Please audit this code:\n\n${codeToAudit}` }
+          ],
+          role: "auditor"
+        })
+      })
+      if (!response.body) throw new Error("No response body")
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let done = false
+      while (!done) {
+        const { value, done: doneReading } = await reader.read()
+        done = doneReading
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true })
+          const lines = chunk.split('\n').filter(Boolean)
+          for (const line of lines) {
+            const jsonStr = line.startsWith('data: ') ? line.slice(6) : line
+            if (jsonStr.trim() === '[DONE]') continue
+            try {
+              const data = JSON.parse(jsonStr)
+              const token = data.choices?.[0]?.delta?.content
+              if (token) {
+                assistantContent += token
+                setAuditorMessages((prev) => {
+                  const withoutLast = prev.slice(0, -1)
+                  return [...withoutLast, { role: "assistant", content: assistantContent }]
+                })
+              }
+            } catch (e) {
+              // Ignore lines that aren't valid JSON
+            }
+          }
+        }
+      }
     } catch (error) {
-      console.error("Error getting audit response:", error)
       setAuditorMessages((prev) => [
         ...prev,
         {
           role: "assistant",
           content: "Sorry, there was an error processing the audit request.",
-        } as Message,
+        },
       ])
     } finally {
       setIsAuditorLoading(false)
