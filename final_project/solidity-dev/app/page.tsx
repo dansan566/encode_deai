@@ -384,7 +384,7 @@ contract SimpleStorage {
   }
 
   return (
-    <div className="h-screen flex flex-col p-4 gap-4">
+    <div className="h-screen flex flex-col p-4 gap-4 overflow-hidden">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Terminal className="h-6 w-6 text-primary" />
@@ -400,13 +400,13 @@ contract SimpleStorage {
       <ResizablePanelGroup direction="horizontal" className="flex-1 rounded-lg border">
         <ResizablePanel defaultSize={30} minSize={20}>
           <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2">
+            <CardHeader className="flex flex-row items-center gap-2 py-3">
               <Bot className="h-5 w-5 text-primary" />
               <CardTitle>Developer Assistant</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 p-0 overflow-hidden">
               <ScrollArea className="h-full p-4">
-                <div className="space-y-4">
+                <div className="space-y-4 pr-2 max-w-full">
                   {developerMessages.map((message, index) => (
                     <ChatMessage key={index} role={message.role} content={message.content} />
                   ))}
@@ -441,11 +441,11 @@ contract SimpleStorage {
 
         <ResizablePanel defaultSize={40} minSize={30}>
           <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2">
+            <CardHeader className="flex flex-row items-center gap-2 py-3">
               <Code className="h-5 w-5 text-primary" />
               <CardTitle>Code Editor</CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 p-0 h-[calc(100%-3.5rem)]">
+            <CardContent className="flex-1 p-0 h-[calc(100%-3.5rem)] overflow-hidden">
               <SolidityEditor value={code} onChange={setCode} onAudit={() => triggerAudit(code)} />
             </CardContent>
           </Card>
@@ -455,13 +455,13 @@ contract SimpleStorage {
 
         <ResizablePanel defaultSize={30} minSize={20}>
           <Card className="h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2">
+            <CardHeader className="flex flex-row items-center gap-2 py-3">
               <Shield className="h-5 w-5 text-primary" />
               <CardTitle>Security Auditor</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 p-0 overflow-hidden">
               <ScrollArea className="h-full p-4">
-                <div className="space-y-4">
+                <div className="space-y-4 pr-2 max-w-full">
                   {auditorMessages.map((message, index) => (
                     <ChatMessage key={index} role={message.role} content={message.content} />
                   ))}
@@ -493,8 +493,8 @@ contract SimpleStorage {
         </ResizablePanel>
       </ResizablePanelGroup>
 
-      <Card>
-        <CardHeader>
+      <Card className="flex-shrink-0">
+        <CardHeader className="py-3">
           <CardTitle>Deploy Contract</CardTitle>
           <CardDescription>Deploy your smart contract to the selected network</CardDescription>
         </CardHeader>

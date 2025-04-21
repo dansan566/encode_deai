@@ -35,7 +35,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-hidden`}>
         <WalletProvider>
           <ThemeProvider
             attribute="class"
@@ -50,6 +50,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-import './globals.css'

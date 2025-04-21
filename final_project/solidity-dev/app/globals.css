@@ -82,3 +82,24 @@
 .prose code {
   @apply bg-muted text-muted-foreground px-1 py-0.5 rounded text-sm;
 }
+
+/* Additional rules for chat messages */
+.prose {
+  @apply w-full max-w-full;
+  word-break: break-word;
+}
+
+.prose pre {
+  @apply overflow-x-auto;
+  max-width: 100%;
+}
+
+.prose pre code {
+  @apply block text-xs;
+  white-space: pre-wrap;
+}
+
+.prose p {
+  @apply my-2;
+  overflow-wrap: break-word;
+}

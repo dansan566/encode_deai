@@ -24,21 +24,24 @@ export default function ChatMessage({ role, content }: ChatMessageProps) {
 
       <div
         className={cn(
-          "rounded-lg p-3 max-w-[85%]",
+          "rounded-lg p-3 max-w-[70%] overflow-hidden",
           isUser ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
         )}
       >
-        <div className="prose prose-sm dark:prose-invert break-words max-w-none">
+        <div className="prose prose-sm dark:prose-invert">
           <ReactMarkdown
             components={{
+              p: ({ children }) => <p className="whitespace-pre-wrap">{children}</p>,
               code: ({ inline, className, children, ...props }: CodeProps) => {
                 const match = /language-(\w+)/.exec(className || '')
-                return !inline && match ? (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
+                return !inline ? (
+                  <pre>
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  </pre>
                 ) : (
-                  <code className="bg-background px-1 py-0.5 rounded" {...props}>
+                  <code {...props}>
                     {children}
                   </code>
                 )

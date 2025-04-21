@@ -27,8 +27,8 @@ export default function SolidityEditor({ value, onChange, onAudit }: SolidityEdi
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex-1 min-h-0">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-hidden">
         {mounted && (
           <Editor
             height="100%"
@@ -46,7 +46,7 @@ export default function SolidityEditor({ value, onChange, onAudit }: SolidityEdi
           />
         )}
       </div>
-      <div className="p-3 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex justify-end gap-2">
+      <div className="p-3 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex justify-end gap-2 flex-shrink-0">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
