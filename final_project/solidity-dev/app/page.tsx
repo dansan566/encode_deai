@@ -529,7 +529,7 @@ contract SimpleStorage {
 
       <ResizablePanelGroup direction="horizontal" className="flex-1 rounded-lg border">
         {/* Developer Panel or Sidebar */}
-        <ResizablePanel defaultSize={isDevCollapsed ? 5 : 30} minSize={isDevCollapsed ? 5 : 20} maxSize={isDevCollapsed ? 5 : 40} collapsible collapsed={isDevCollapsed}>
+        <ResizablePanel defaultSize={isDevCollapsed ? 5 : 30} minSize={isDevCollapsed ? 5 : 20} maxSize={isDevCollapsed ? 5 : 40} collapsible onCollapse={() => setIsDevCollapsed((v) => !v)}>
           <div className="relative h-full">
             <button
               className="absolute top-2 right-2 z-10 rounded p-1 bg-background hover:bg-accent border shadow"
@@ -623,7 +623,7 @@ contract SimpleStorage {
         <ResizableHandle />
 
         {/* Auditor Panel or Sidebar */}
-        <ResizablePanel defaultSize={isAuditorCollapsed ? 5 : 30} minSize={isAuditorCollapsed ? 5 : 20} maxSize={isAuditorCollapsed ? 5 : 40} collapsible collapsed={isAuditorCollapsed}>
+        <ResizablePanel defaultSize={isAuditorCollapsed ? 5 : 30} minSize={isAuditorCollapsed ? 5 : 20} maxSize={isAuditorCollapsed ? 5 : 40} collapsible onCollapse={() => setIsAuditorCollapsed((v) => !v)}>
           <div className="relative h-full">
             <button
               className="absolute top-2 left-2 z-10 rounded p-1 bg-background hover:bg-accent border shadow"
