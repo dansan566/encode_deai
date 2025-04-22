@@ -319,8 +319,8 @@ contract MyContract {
       setDeployStatus("Waiting for transaction confirmation...")
       await contractInstance.waitForDeployment()
       setDeployStatus("Contract deployed!")
-      setContractAddress(contractInstance.target)
-      toast({ title: "Contract deployed", description: contractInstance.target })
+      setContractAddress(contractInstance.target.toString())
+      toast({ title: "Contract deployed", description: contractInstance.target.toString() })
     } catch (err: any) {
       setDeployStatus("Deployment failed: " + (err.message || String(err)))
     } finally {
